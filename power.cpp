@@ -11,8 +11,8 @@ int main() {
     double a=0;
     f2 = open("/tmp/fifo",O_RDWR);
     read(f2,&a,sizeof(double));
-    cout<<"square("<<a<<")"<<"\n";
-    a=sqrt(a);
+    cout<<a<<"^2"<<"\n";
+    a=pow(a,2);
     write(f2,&a,sizeof(double));
     close(f2);
     exit(0);
