@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <bits/sigset.h>
 #include <wait.h>
-#include "signal.h"
+#include <signal.h>
 
 using namespace std;
 
@@ -24,12 +24,12 @@ int main() {
         if (pidId) {
             mkfifo("/tmp/fifo",S_IWRITE|S_IREAD|S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH);
             f1 = open("/tmp/fifo",O_RDWR);
-
             write(f1,&a,sizeof(double));
             waitpid(pidId,&status,0);
             if ((status & 0xff) == 0) {
                 read(f1,&a,sizeof(double));
                 cout<<"a = "<<a<<"\n";
+                kill(pidId,SIGKILL);
                 close(f1);
             }
 
@@ -42,6 +42,7 @@ int main() {
                     read(f1,&b,sizeof(double));
                     close(f1);
                     cout<<"b = "<<b<<"\n";
+                    kill(pidId,SIGKILL);
                 }
                 pidId = fork();
                 if (pidId){
@@ -53,6 +54,7 @@ int main() {
                         read(f1,&c,sizeof(double));
                         close(f1);
                         cout<<"c = "<<c<<"\n";
+                        kill(pidId,SIGKILL);
                     }
                     pidId = fork();
                     if (pidId){
@@ -63,6 +65,7 @@ int main() {
                             read(f1,&c,sizeof(double));
                             close(f1);
                             cout<<"c = "<<c<<"\n";
+                            kill(pidId,SIGKILL);
                         }
                     }else{
                         execv("./square", e);
@@ -76,5 +79,6 @@ int main() {
         } else {
             execv("./power",e);
         }
+    unlink("/tmp/fifo");
     return 0;
 }

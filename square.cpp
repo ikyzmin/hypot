@@ -9,6 +9,7 @@ using namespace std;
 int main() {
     int q,f2;
     double a=0;
+    //kill(0,SIGCHLD);
     f2 = open("/tmp/fifo",O_RDWR);
     read(f2,&a,sizeof(double));
     cout<<"square("<<a<<")"<<"\n";
